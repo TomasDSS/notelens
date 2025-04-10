@@ -1,19 +1,20 @@
+import React, { useEffect, useState } from "react";
 
-import { useEffect, useState } from "react";
-
-// This page shows a user's previously scanned notes
 function History() {
-  const [scans, setScans] = useState([]); // All scan results
-  const [loading, setLoading] = useState(true); // Shows loading spinner
-  const [error, setError] = useState(null); // For error messages
+  const [scans, setScans] = useState([]);
+  const [message, setMessage] = useState("");
 
-  // This runs when the page first loads
   useEffect(() => {
     const fetchScans = async () => {
-      try {
-        const token = localStorage.getItem("token");
+      const token = localStorage.getItem("token");
 
-        const res = await fetch("http://localhost:5000/api/scan", {
+      if (!token) {
+        setMessage("❌ Please log in first");
+        return;
+      }
+
+      try {
+        const res = await fetch("https://notelens-api.onrender.com/api/scans", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -21,15 +22,14 @@ function History() {
 
         const data = await res.json();
 
-        if (!res.ok) {
-          throw new Error(data.message || "Something went wrong");
+        if (res.ok) {
+          setScans(data);
+        } else {
+          setMessage(data.message || "❌ Could not fetch history");
         }
-
-        setScans(data.scans); // Save scan list to state
       } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false); // Whether it fails or succeeds, stop the loading spinner
+        console.error("History error:", err);
+        setMessage("Server error");
       }
     };
 
@@ -37,34 +37,20 @@ function History() {
   }, []);
 
   return (
-    <div style={{ padding: "2rem", fontFamily: "Arial, sans-serif" }}>
-      <h1 style={{ color: "#0f0f0f" }}>📚 Scan History</h1>
-
-      {loading && <p>Loading...</p>}
-      {error && <p style={{ color: "red" }}>❌ {error}</p>}
-
-      {!loading && scans.length === 0 && <p>No scans found yet.</p>}
-
-      <ul style={{ listStyle: "none", padding: 0 }}>
-        {scans.map((scan, index) => (
-          <li
-            key={index}
-            style={{
-              background: "#f4f4f4",
-              marginBottom: "1rem",
-              padding: "1rem",
-              borderRadius: "6px",
-              boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
-            }}
-          >
-            <p><strong>📝 Scan {index + 1}:</strong></p>
-            <p style={{ whiteSpace: "pre-wrap" }}>{scan.extractedText}</p>
-            <p style={{ fontSize: "0.8rem", color: "#555" }}>
-              📅 {new Date(scan.createdAt).toLocaleString()}
-            </p>
-          </li>
-        ))}
-      </ul>
+    <div className="form-container">
+      <h2>📚 Scan History</h2>
+      {message && <p className="message">{message}</p>}
+      {scans.length === 0 ? (
+        <p>No scans found yet.</p>
+      ) : (
+        <ul>
+          {scans.map((scan) => (
+            <li key={scan._id}>
+              <strong>{scan.createdAt.slice(0, 10)}:</strong> {scan.text}
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }

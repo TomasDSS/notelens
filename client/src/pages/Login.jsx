@@ -1,81 +1,46 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import '../styles/Login.css'; // Import the CSS file
+import React, { useState } from "react";
+import "./Form.css";
 
 function Login() {
-  // Store user's input in state
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [message, setMessage] = useState("");
 
-  // When the form is submitted
   const handleLogin = async (e) => {
     e.preventDefault();
 
     try {
-      // Send login info to the backend
-      const res = await fetch('http://localhost:5000/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("https://notelens-api.onrender.com/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({ email, password }),
       });
 
       const data = await res.json();
 
-      // If there's an error, show a message
-      if (!res.ok) {
-        alert(data.message || 'Login failed');
-        return;
+      if (res.ok) {
+        localStorage.setItem("token", data.token);
+        setMessage("✅ Login successful!");
+      } else {
+        setMessage(data.message || "❌ Login failed");
       }
-
-      // Save the token and move to upload page
-      localStorage.setItem('token', data.token);
-      alert('Login successful');
-      navigate('/upload');
     } catch (err) {
-      console.error('Login error:', err);
-      alert('Something went wrong while logging in');
+      console.error("Login error:", err);
+      setMessage("Server error");
     }
   };
 
   return (
-    <div className="login-container">
-      <div className="login-card">
-        <h1 className="login-title">Login to NoteLens</h1>
-
-        <form onSubmit={handleLogin}>
-          {/* Email field */}
-          <label>Email</label>
-          <input
-            type="email"
-            className="login-input"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-
-          {/* Password field */}
-          <label>Password</label>
-          <input
-            type="password"
-            className="login-input"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-
-          {/* Submit button */}
-          <button type="submit" className="login-button">
-            Login
-          </button>
-        </form>
-
-        {/* Link to register page */}
-        <p className="login-footer">
-          Don’t have an account?{' '}
-          <span className="login-link" onClick={() => navigate('/register')}>
-            Register here
-          </span>
-        </p>
-      </div>
+    <div className="form-container">
+      <h2>Login</h2>
+      <form onSubmit={handleLogin}>
+        <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+        <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+        <button type="submit">Login</button>
+      </form>
+      {message && <p className="message">{message}</p>}
     </div>
   );
 }
