@@ -1,0 +1,91 @@
+/* Basic setup for the whole page */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f0f4f8, #dbeafe);
+  }
+  
+  /* Centers the login box on the screen */
+  .login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+  
+  /* The actual login card */
+  .login-card {
+    background-color: white;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+  }
+  
+  /* Big title at the top */
+  .login-title {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 30px;
+    color: #222;
+    text-align: center;
+  }
+  
+  /* Input boxes */
+  .login-input {
+    display: block;
+    width: 100%;
+    padding: 12px 15px;
+    margin-bottom: 20px;
+    font-size: 16px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    transition: border-color 0.3s ease;
+  }
+  
+  /* Blue border on focus */
+  .login-input:focus {
+    outline: none;
+    border-color: #3b82f6;
+  }
+  
+  /* Green button */
+  .login-button {
+    background-color: #10b981;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s ease;
+  }
+  
+  /* Darker green on hover */
+  .login-button:hover {
+    background-color: #059669;
+  }
+  
+  /* Text under the form */
+  .login-footer {
+    margin-top: 20px;
+    font-size: 14px;
+    text-align: center;
+    color: #555;
+  }
+  
+  /* Register link */
+  .login-link {
+    color: #3b82f6;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
+  }
+  
+  /* Darker blue when you hover the link */
+  .login-link:hover {
+    color: #1e40af;
+  }
+  
